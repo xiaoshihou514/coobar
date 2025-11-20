@@ -1,45 +1,55 @@
 package com.github.xiaoshihou.coobar;
 
-import com.intellij.lexer.FlexLexer;
-import com.intellij.psi.tree.IElementType;
-import com.github.xiaoshihou.coobar.CobolTypes;
 import com.intellij.psi.TokenType;
-
+import com.intellij.psi.tree.IElementType;
+import com.intellij.lexer.FlexLexer;
 %%
 
 %class CobolLexer
 %implements FlexLexer
 %unicode
+%ignorecase
 %function advance
 %type IElementType
 %eof{  return;
 %eof}
 
-CRLF=\R
-WHITE_SPACE=[\ \n\t\f]
-FIRST_VALUE_CHARACTER=[^ \n\f\\] | "\\"{CRLF} | "\\".
-VALUE_CHARACTER=[^\n\f\\] | "\\"{CRLF} | "\\".
-END_OF_LINE_COMMENT=("#"|"!")[^\r\n]*
-SEPARATOR=[:=]
-KEY_CHARACTER=[^:=\ \n\t\f\\] | "\\ "
-
-%state WAITING_VALUE
+WHITE_SPACE=[\ \t\f\r\n]+
+NUMBER=[0-9]+
+IDENTIFIER=[A-Za-z][A-Za-z0-9\-]*
+STRING='[^'\r\n]*'
 
 %%
 
-<YYINITIAL> {END_OF_LINE_COMMENT}                           { yybegin(YYINITIAL); return CobolTypes.COMMENT; }
+{WHITE_SPACE}                   { return TokenType.WHITE_SPACE; }
 
-<YYINITIAL> {KEY_CHARACTER}+                                { yybegin(YYINITIAL); return CobolTypes.KEY; }
+"IDENTIFICATION"                { return CobolTypes.IDENTIFICATION; }
+"DIVISION"                      { return CobolTypes.DIVISION; }
+"PROGRAM-ID"                    { return CobolTypes.PROGRAM_ID; }
+"DATA"                          { return CobolTypes.DATA; }
+"WORKING-STORAGE"               { return CobolTypes.WORKING_STORAGE; }
+"SECTION"                       { return CobolTypes.SECTION; }
+"PROCEDURE"                     { return CobolTypes.PROCEDURE; }
 
-<YYINITIAL> {SEPARATOR}                                     { yybegin(WAITING_VALUE); return CobolTypes.SEPARATOR; }
+"PIC"                           { return CobolTypes.PIC; }
+"VALUE"                         { return CobolTypes.VALUE; }
 
-<WAITING_VALUE> {CRLF}({CRLF}|{WHITE_SPACE})+               { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
+"PERFORM"                       { return CobolTypes.PERFORM; }
+"VARYING"                       { return CobolTypes.VARYING; }
+"FROM"                          { return CobolTypes.FROM; }
+"BY"                            { return CobolTypes.BY; }
+"UNTIL"                         { return CobolTypes.UNTIL; }
+"STOP"                          { return CobolTypes.STOP; }
+"RUN"                           { return CobolTypes.RUN; }
+"DISPLAY"                       { return CobolTypes.DISPLAY; }
 
-<WAITING_VALUE> {WHITE_SPACE}+                              { yybegin(WAITING_VALUE); return TokenType.WHITE_SPACE; }
+"("                             { return CobolTypes.LPAREN; }
+")"                             { return CobolTypes.RPAREN; }
+"="                             { return CobolTypes.EQUALS; }
+"."                             { return CobolTypes.DOT; }
 
-<WAITING_VALUE> {FIRST_VALUE_CHARACTER}{VALUE_CHARACTER}*   { yybegin(YYINITIAL); return CobolTypes.VALUE; }
+{NUMBER}                        { return CobolTypes.NUMBER; }
+{IDENTIFIER}                    { return CobolTypes.IDENTIFIER; }
+{STRING}                        { return CobolTypes.STRING; }
 
-({CRLF}|{WHITE_SPACE})+                                     { yybegin(YYINITIAL); return TokenType.WHITE_SPACE; }
-
-[^]                                                         { return TokenType.BAD_CHARACTER; }
-
+.                               { return TokenType.BAD_CHARACTER; }

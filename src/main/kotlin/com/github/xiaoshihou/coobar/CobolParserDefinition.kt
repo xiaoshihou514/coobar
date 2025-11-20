@@ -21,15 +21,9 @@ class CobolParserDefinition : ParserDefinition {
 
     override fun createParser(project: Project?): PsiParser = CobolParser()
 
-    override fun getFileNodeType(): IFileElementType = FILE
+    override fun getFileNodeType(): IFileElementType = IFileElementType(CobolLanguage.INSTANCE)
 
-    override fun createFile(viewProvider: FileViewProvider): PsiFile =
-        CobolFile(viewProvider)
+    override fun createFile(viewProvider: FileViewProvider): PsiFile = CobolFile(viewProvider)
 
-    override fun createElement(node: ASTNode?): PsiElement =
-        CobolTypes.Factory.createElement(node)
-
-    companion object {
-        val FILE: IFileElementType = IFileElementType(CobolLanguage.INSTANCE)
-    }
+    override fun createElement(node: ASTNode?): PsiElement = CobolTypes.Factory.createElement(node)
 }

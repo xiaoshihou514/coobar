@@ -1,8 +1,7 @@
 package com.github.xiaoshihou.coobar
 
-import com.intellij.openapi.util.IconLoader;
-
-import javax.swing.*;
+import com.intellij.openapi.util.IconLoader
+import javax.swing.Icon
 
 object CobolIcon {
     @JvmField

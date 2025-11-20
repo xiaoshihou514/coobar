@@ -11,10 +11,73 @@
   elementTypeHolderClass="com.github.xiaoshihou.coobar.CobolTypes"
   elementTypeClass="com.github.xiaoshihou.coobar.CobolElementType"
   tokenTypeClass="com.github.xiaoshihou.coobar.CobolTokenType"
+
+  tokens = [
+    IDENTIFICATION = "IDENTIFICATION"
+    DIVISION = "DIVISION"
+    PROGRAM_ID = "PROGRAM-ID"
+    DATA = "DATA"
+    WORKING_STORAGE = "WORKING-STORAGE"
+    SECTION = "SECTION"
+    PROCEDURE = "PROCEDURE"
+    PIC = "PIC"
+    VALUE = "VALUE"
+    PERFORM = "PERFORM"
+    VARYING = "VARYING"
+    FROM = "FROM"
+    BY = "BY"
+    UNTIL = "UNTIL"
+    STOP = "STOP"
+    RUN = "RUN"
+    DISPLAY = "DISPLAY"
+    DOT = "."
+    LPAREN = "("
+    RPAREN = ")"
+    EQUALS = "="
+    NUMBER = "NUMBER"
+    IDENTIFIER = "IDENTIFIER"
+    STRING = "STRING"
+  ]
 }
 
-simpleFile ::= item_*
+root ::= program
 
-private item_ ::= (property|COMMENT|CRLF)
+program ::= identification_division data_division? procedure_division
 
-property ::= (KEY? SEPARATOR VALUE?) | KEY
+line_prefix ::= NUMBER
+
+identification_division ::= line_prefix IDENTIFICATION DIVISION DOT program_id_paragraph
+program_id_paragraph ::= line_prefix PROGRAM_ID DOT program_name DOT
+program_name ::= IDENTIFIER
+
+data_division ::= line_prefix DATA DIVISION DOT working_storage_section?
+working_storage_section ::= line_prefix WORKING_STORAGE SECTION DOT data_description_entry*
+data_description_entry ::= line_prefix level_number data_name picture_clause value_clause? DOT
+level_number ::= NUMBER
+data_name ::= IDENTIFIER
+picture_clause ::= PIC picture_string
+picture_string ::= picture_fragment+
+picture_fragment ::= NUMBER | IDENTIFIER | LPAREN | RPAREN
+value_clause ::= VALUE literal
+literal ::= NUMBER | STRING | IDENTIFIER
+
+procedure_division ::= line_prefix PROCEDURE DIVISION DOT paragraph*
+paragraph ::= line_prefix paragraph_name DOT paragraph_body?
+paragraph_name ::= IDENTIFIER
+paragraph_body ::= sentence+
+sentence ::= line_prefix statement DOT?
+statement ::= perform_statement
+           | stop_run_statement
+           | display_statement
+
+perform_statement ::= PERFORM perform_target perform_varying_phrase? perform_until_phrase?
+perform_target ::= IDENTIFIER
+perform_varying_phrase ::= VARYING IDENTIFIER FROM literal BY literal
+perform_until_phrase ::= UNTIL condition
+condition ::= identifier_ref comparison_operator literal
+comparison_operator ::= EQUALS
+identifier_ref ::= IDENTIFIER
+
+stop_run_statement ::= STOP RUN
+display_statement ::= DISPLAY display_item+
+display_item ::= literal | identifier_ref

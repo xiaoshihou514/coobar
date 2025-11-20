@@ -11,20 +11,32 @@ import static com.github.xiaoshihou.coobar.CobolTypes.*;
 import com.intellij.extapi.psi.ASTWrapperPsiElement;
 import com.github.xiaoshihou.coobar.*;
 
-public class CobolPropertyImpl extends ASTWrapperPsiElement implements CobolProperty {
+public class CobolProgramIdParagraphImpl extends ASTWrapperPsiElement implements CobolProgramIdParagraph {
 
-  public CobolPropertyImpl(@NotNull ASTNode node) {
+  public CobolProgramIdParagraphImpl(@NotNull ASTNode node) {
     super(node);
   }
 
   public void accept(@NotNull CobolVisitor visitor) {
-    visitor.visitProperty(this);
+    visitor.visitProgramIdParagraph(this);
   }
 
   @Override
   public void accept(@NotNull PsiElementVisitor visitor) {
     if (visitor instanceof CobolVisitor) accept((CobolVisitor)visitor);
     else super.accept(visitor);
+  }
+
+  @Override
+  @NotNull
+  public CobolLinePrefix getLinePrefix() {
+    return findNotNullChildByClass(CobolLinePrefix.class);
+  }
+
+  @Override
+  @NotNull
+  public CobolProgramName getProgramName() {
+    return findNotNullChildByClass(CobolProgramName.class);
   }
 
 }
