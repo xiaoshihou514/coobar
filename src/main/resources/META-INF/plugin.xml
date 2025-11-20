@@ -31,7 +31,9 @@
                 fieldName="INSTANCE"
                 language="Cobol"
                 extensions="cbl"/>
+        <lang.parserDefinition
+                language="Cobol"
+                implementationClass="com.github.xiaoshihou.coobar.CobolParserDefinition"/>
     </extensions>
-
 
 </idea-plugin>

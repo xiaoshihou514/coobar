@@ -1,0 +1,20 @@
+{
+  parserClass="com.github.xiaoshihou.coobar.CobolParser"
+
+  extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
+
+  psiClassPrefix="Cobol"
+  psiImplClassSuffix="Impl"
+  psiPackage="com.github.xiaoshihou.coobar"
+  psiImplPackage="com.github.xiaoshihou.coobar.impl"
+
+  elementTypeHolderClass="com.github.xiaoshihou.coobar.CobolTypes"
+  elementTypeClass="com.github.xiaoshihou.coobar.CobolElementType"
+  tokenTypeClass="com.github.xiaoshihou.coobar.CobolTokenType"
+}
+
+simpleFile ::= item_*
+
+private item_ ::= (property|COMMENT|CRLF)
+
+property ::= (KEY? SEPARATOR VALUE?) | KEY
