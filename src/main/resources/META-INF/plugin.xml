@@ -34,6 +34,9 @@
         <lang.parserDefinition
                 language="Cobol"
                 implementationClass="com.github.xiaoshihou.coobar.CobolParserDefinition"/>
+            <lang.syntaxHighlighterFactory
+                    language="Cobol"
+                    implementationClass="com.github.xiaoshihou.coobar.CobolSyntaxHighlighterFactory"/>
     </extensions>
 
 </idea-plugin>
